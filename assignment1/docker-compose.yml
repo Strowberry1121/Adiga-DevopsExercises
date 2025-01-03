@@ -1,0 +1,20 @@
+services:
+  flask_app:
+    build: ./app
+    volumes:
+      - ./db:/app/db  # Persist SQLite data
+    ports:
+      - "5000:5000"  # Expose port 5000 for the Flask app
+    networks:
+      - app_network
+
+  db:
+    image: nouchka/sqlite3  # SQLite database image
+    volumes:
+      - ./db:/db  # Persist SQLite data
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

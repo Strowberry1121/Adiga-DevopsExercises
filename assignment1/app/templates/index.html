@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask CRUD Operations</title>
+    <script>
+        async function fetchItems() {
+            const response = await fetch('/items');
+            const items = await response.json();
+            const itemList = document.getElementById('itemList');
+            itemList.innerHTML = '';
+
+            items.forEach(item => {
+                itemList.innerHTML += `<li>${item.name} - ${item.description} 
+                    <button onclick="deleteItem(${item.id})">Delete</button>
+                    <button onclick="populateUpdateForm(${item.id}, '${item.name}', '${item.description}')">Update</button>
+                </li>`;
+            });
+        }
+
+        async function addItem() {
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+            await fetch('/items', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, description })
+            });
+            fetchItems();
+        }
+
+        async function deleteItem(id) {
+            await fetch(`/items/${id}`, {
+                method: 'DELETE'
+            });
+            fetchItems();
+        }
+
+        function populateUpdateForm(id, name, description) {
+            document.getElementById('updateId').value = id;
+            document.getElementById('updateName').value = name;
+            document.getElementById('updateDescription').value = description;
+        }
+
+        async function updateItem() {
+            const id = document.getElementById('updateId').value;
+            const name = document.getElementById('updateName').value;
+            const description = document.getElementById('updateDescription').value;
+            await fetch(`/items/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, description })
+            });
+            fetchItems();
+        }
+
+        window.onload = fetchItems;
+    </script>
+</head>
+<body>
+    <h1>Flask CRUD Operations</h1>
+    <h2>Add Item</h2>
+    <input type="text" id="name" placeholder="Item Name" required>
+    <input type="text" id="description" placeholder="Item Description" required>
+    <button onclick="addItem()">Add Item</button>
+
+    <h2>Items</h2>
+    <ul id="itemList"></ul>
+
+    <h2>Update Item</h2>
+    <input type="hidden" id="updateId">
+    <input type="text" id="updateName" placeholder="New Item Name" required>
+    <input type="text" id="updateDescription" placeholder="New Item Description" required>
+    <button onclick="updateItem()">Update Item</button>
+</body>
+</html>
