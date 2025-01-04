@@ -1,0 +1,8 @@
+FROM ubuntu:20.04
+
+RUN apt-get update && apt-get install -y curl
+
+WORKDIR /app
+COPY log_curl_output.sh /app/
+
+CMD ["bash", "log_curl_output.sh"]

@@ -15,6 +15,7 @@ spec:
       containers:
       - name: treasurebook-api
         image: treasurebook-api:latest  # Replace with the actual image name
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
         resources:
